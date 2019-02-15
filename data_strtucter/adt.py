@@ -48,7 +48,20 @@ class _BagIterator:
             raise StopIteration
 
 
+if __name__ == "__main__":
+    bag = Bag()
+    bag.add(1)
+    bag.add(2)
+    for i in bag:  # 隐藏了迭代器的实现
+        print(i)
 
+    i = bag.__iter__()
+    while True:
+        try:
+            item = i.__next__()
+            print(item)
+        except StopIteration:
+            break
 
 
 
