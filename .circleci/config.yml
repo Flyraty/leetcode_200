@@ -1,62 +1,21 @@
 version: 2
 jobs:
-    build:
-        machine: true
-        working_directory: ~/pythonic
-        steps:
-            - checkout
-            - run:
-                name: Build/Push Image
-                command: make build
-
-    deploy-test:
-        docker:
-            - image: circleci/python:3.6.4
-        working_directory: ~/pythonic
-        steps:
-            - checkout
-            - run:
-                name: Deploy Test
-                command: |
-                    python3 -m venv venv
-                    . venv/bin/activate
-
-    deploy-production:
-        docker:
-            - image: circleci/python:3.6.4
-        working_directory: ~/pythonic
-        steps:
-            - checkout
-            - run:
-                name: Deploy Production
-                command: |
-                    python3 -m venv venv
-                    . venv/bin/activate
-
+  build:
+    docker:
+      - image: circleci/python:3.6.1
+    steps:
+      - checkout
+      - run: echo 'hello world'
+  test:
+    docker:
+      - image: circleci/python:3.6.1
+    steps:
+      - checkout
+      - run: echo 'hello world'
 
 workflows:
-    version: 2
-    build-to-take-off:
-        jobs:
-            - build:
-                context: build-image
-
-            - deploy-test:
-                context: deploy-context
-                requires:
-                    - build
-                filters:
-                    branches:
-                        only:
-                            - /support\/.*/
-                            - /feature\/.*/
-                            - develop
-
-            - deploy-production:
-                context: deploy-context
-                requires:
-                    - build
-                filters:
-                    branches:
-                        only:
-                            - master
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test
