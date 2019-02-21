@@ -30,7 +30,7 @@ workflows:
               only:
                 - /support\/.*/
                 - /feature\/.*/
-                develop
+                - develop
       - deploy-production:
           requires:
             - build
