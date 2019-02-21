@@ -1,21 +1,40 @@
 version: 2
 jobs:
   build:
+    working_directory: ~/pythonic
     docker:
       - image: circleci/python:3.6.1
     steps:
       - checkout
-      - run: echo 'hello world'
+      - run:
+          echo "circle ci test"
   test:
     docker:
       - image: circleci/python:3.6.1
     steps:
       - checkout
-      - run: echo 'hello world'
+      - run:
+          name: build
+          command: python3 -m venv venv
 
 workflows:
   version: 2
-  build_and_test:
+  build-to-test:
     jobs:
       - build
-      - test
+      - deploy-test:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - /support\/.*/
+                - /feature\/.*/
+                develop
+      - deploy-production:
+          requires:
+            - build
+          filters:
+            branches:
+            only:
+              - master
