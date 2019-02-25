@@ -3,38 +3,21 @@ jobs:
   build:
     working_directory: ~/pythonic
     docker:
-      - image: circleci/python:3.6.1
-    steps:
-      - checkout
-      - run:
-          echo "circle ci test"
-  test:
-    docker:
-      - image: circleci/python:3.6.1
-    steps:
-      - checkout
-      - run:
-          name: build
-          command: python3 -m venv venv
+      - image: circleci/python:3.6.4
 
-workflows:
-  version: 2
-  build-to-test:
-    jobs:
-      - build
-      - deploy-test:
-          requires:
-            - build
-          filters:
-            branches:
-              only:
-                - /support\/.*/
-                - /feature\/.*/
-                - develop
-      - deploy-production:
-          requires:
-            - build
-          filters:
-            branches:
-            only:
-              - master
+    steps:
+      - checkout
+      - run: sudo chown -R circleci:circleci /usr/local/bin
+      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
+      - run:
+          command: |
+            sudo pip install pipenv
+            pipenv install
+      - run:
+          command: |
+            pipenv run python ci_test.py
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: test-results
+          destination: tr1
