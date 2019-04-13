@@ -1,0 +1,23 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/pythonic
+    docker:
+      - image: circleci/python:3.6.4
+
+    steps:
+      - checkout
+      - run: sudo chown -R circleci:circleci /usr/local/bin
+      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
+      - run:
+          command: |
+            sudo pip install pipenv
+            pipenv install
+      - run:
+          command: |
+            pipenv run python ci_test.py
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: test-results
+          destination: tr1
